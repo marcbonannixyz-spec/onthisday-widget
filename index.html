@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>On This Day Headlines</title>
+<style>
+body { font-family: Arial, sans-serif; padding: 20px; }
+input { padding: 6px; }
+button { padding: 6px 10px; margin-left: 6px; }
+h3 { margin-top: 18px; }
+ul { margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<label>Date (YYYY-MM-DD):</label>
+<input id="d" value="1969-07-20">
+<button onclick="run(true)">All</button>
+<button onclick="run(false)">Events Only</button>
+
+<div id="out"></div>
+
+<script>
+const EXEC = "https://script.google.com/macros/s/AKfycbXXXX/exec";
+
+async function run(all) {
+  const date = document.getElementById("d").value;
+  const url = `${EXEC}?api=1&date=${date}&all=${all ? 1 : 0}`;
+
+  const r = await fetch(url);
+  const data = await r.json();
+
+  let html = "<h3>Events</h3><ul>";
+  (data.data.events || []).forEach(x => html += "<li>" + x + "</li>");
+  html += "</ul>";
+
+  if (all) {
+    html += "<h3>Births</h3><ul>";
+    (data.data.births || []).forEach(x => html += "<li>" + x + "</li>");
+    html += "</ul>";
+
+    html += "<h3>Deaths</h3><ul>";
+    (data.data.deaths || []).forEach(x => html += "<li>" + x + "</li>");
+    html += "</ul>";
+  }
+
+  document.getElementById("out").innerHTML = html;
+}
+</script>
+
+</body>
+</html>
